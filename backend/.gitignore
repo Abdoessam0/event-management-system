@@ -1,11 +1,3 @@
-# Ignore Visual Studio folders
-.vs/
-
-# Node modules
 node_modules/
-
-# Logs
-*.log
-
-# Env file
 .env
+*.log

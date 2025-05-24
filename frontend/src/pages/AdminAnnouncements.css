@@ -1,0 +1,72 @@
+.admin-ann-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.admin-ann-list {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-ann-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* updated */
+    border-bottom: 1px solid #ddd;
+    padding: 0.75rem 0;
+}
+
+.admin-ann-list button {
+    margin-left: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.admin-ann-list button:first-of-type {
+    background: #f39c12;
+}
+
+.admin-ann-list button:first-of-type:hover {
+    background: #d48f10;
+}
+
+.admin-ann-list button:last-of-type {
+    background: #e74c3c;
+}
+
+.admin-ann-list button:last-of-type:hover {
+    background: #c0392b;
+}
+
+.admin-ann-form label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.admin-ann-form input,
+.admin-ann-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccd;
+    border-radius: 4px;
+    margin-top: 0.25rem;
+}
+
+.admin-ann-form button {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.admin-ann-form button:hover {
+    background: #219150;
+}

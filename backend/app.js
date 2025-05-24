@@ -1,46 +1,66 @@
-﻿// backend/app.js
-
-// 1) Load environment variables and connect to MongoDB
-require('dotenv').config();
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ MongoDB connected'))
-    .catch(err => console.error('❌ MongoDB connection error:', err));
-
-// 2) Import core modules
+﻿require('dotenv').config();
+const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 const cors = require('cors');
 
-// 3) Import routers
+// Routers
+
 const authRouter = require('./routes/auth');
-const adminRouter = require('./routes/admin');
-const eventsRouter = require('./routes/events');
-const announceRouter = require('./routes/announcements');
-const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-
-// 4) Initialize Express app & mount global middlewares
+const eventsRouter = require('./routes/events');
+const announcementsRouter = require('./routes/announcements');
+const adminRouter = require('./routes/admin');
+const ticketsRouter = require('./routes/tickets');
 const app = express();
-app.use(cors());                                  // Enable CORS
-app.use(logger('dev'));                           // HTTP request logger
-app.use(express.json());                          // Parse JSON bodies
-app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
-app.use(cookieParser());                          // Parse cookies
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
-// 5) Mount API routers (in correct order)
-app.use('/api/auth', authRouter);      // register, login, change-password
-app.use('/api/admin', adminRouter);     // approve users
-app.use('/api/events', eventsRouter);    // events CRUD
-app.use('/api/announcements', announceRouter);  // announcements CRUD
+// Disable ETag to avoid 304 caching for JSON APIs
+app.disable('etag');
 
-// 6) Mount remaining routes (express-generator defaults)
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// ———— Connect MongoDB ————
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('✅ MongoDB connected'))
+    .catch(err => console.error('❌ MongoDB error', err));
 
-// 7) Export the configured app
+// ———— Middlewares ————
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
+// ———— Static public folder ————
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ———— Mount routers ————
+
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/events', eventsRouter);
+app.use('/api/announcements', announcementsRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/tickets', ticketsRouter);
+app.use('/api/announcements', announcementsRouter);
+
+
+// ———— 404 handler ————
+app.use((req, res, next) => {
+    next(createError(404));
+});
+
+// ———— Error handler ————
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.json({
+        message: err.message,
+        error: req.app.get('env') === 'development' ? err : {}
+    });
+});
+
 module.exports = app;

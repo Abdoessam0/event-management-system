@@ -1,0 +1,5 @@
+# Ignore Visual Studio Code workspace data
+.vs/
+node_modules/
+.env
+*.log

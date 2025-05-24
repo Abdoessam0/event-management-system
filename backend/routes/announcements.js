@@ -1,26 +1,47 @@
-console.log('🔔 Announce router loaded');
-
+﻿// backend/routes/announcements.js
 const express = require('express');
-const Ann          = require('../models/announcement');
+const router = express.Router();
+const Announcement = require('../models/announcement');
 const { verifyToken, isAdmin } = require('../middleware/auth');
-const router       = express.Router();
 
-// List
-router.get('/', async (req,res)=>{
-  const list = await Ann.find().sort({date:-1});
-  res.json(list);
+// GET /api/announcements
+router.get('/', async (req, res) => {
+    try {
+        const list = await Announcement.find().sort({ createdAt: -1 });
+        res.json(list);
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
 });
 
-// Create (Admin)
-router.post('/', verifyToken, isAdmin, async (req,res)=>{
-  const a = await new Ann(req.body).save();
-  res.status(201).json(a);
+// POST /api/announcements    (admin only)
+router.post('/', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const a = await new Announcement(req.body).save();
+        res.status(201).json(a);
+    } catch (err) {
+        res.status(400).json({ msg: err.message });
+    }
 });
 
-// Delete (Admin)
-router.delete('/:id', verifyToken, isAdmin, async (req,res)=>{
-  await Ann.findByIdAndDelete(req.params.id);
-  res.json({msg:'Deleted'});
+// PUT /api/announcements/:id (admin only)
+router.put('/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const a = await Announcement.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(a);
+    } catch (err) {
+        res.status(400).json({ msg: err.message });
+    }
+});
+
+// DELETE /api/announcements/:id (admin only)
+router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        await Announcement.findByIdAndDelete(req.params.id);
+        res.json({ msg: 'Deleted' });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
 });
 
 module.exports = router;

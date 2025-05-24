@@ -1,7 +1,12 @@
+// backend/models/announcement.js
 const mongoose = require('mongoose');
-const schema = new mongoose.Schema({
-  title:   { type: String, required: true },
-  message: { type: String, required: true },
-  date:    { type: Date,   default: Date.now }
+const Schema = mongoose.Schema;
+
+const AnnouncementSchema = new Schema({
+    title: { type: String, required: true },
+    content: { type: String, required: true }
+}, {
+    timestamps: true            
 });
-module.exports = mongoose.model('Announcement', schema);
+
+module.exports = mongoose.model('Announcement', AnnouncementSchema);

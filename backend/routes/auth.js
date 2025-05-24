@@ -1,71 +1,60 @@
 ﻿// backend/routes/auth.js
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
+const { verifyToken } = require('../middleware/auth');
 const router = express.Router();
 
-// — Register —
+function signToken(user) {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+}
+
+// POST /api/auth/register
 router.post('/register', async (req, res) => {
-    console.log('🔔 Hit Register endpoint');
     try {
         const { email, password, interests } = req.body;
-        if (await User.findOne({ email })) {
-            return res.status(400).json({ msg: 'Email already exists' });
-        }
-        const hashed = await bcrypt.hash(password, 10);
-        await new User({ email, password: hashed, interests }).save();
-        res.json({ msg: 'Registered successfully, pending admin approval.' });
+        await new User({ email, password, interests }).save();
+        res.status(201).json({ msg: 'Registered! Awaiting admin approval.' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (err.code === 11000) return res.status(400).json({ msg: 'Email exists' });
+        res.status(500).json({ msg: err.message });
     }
 });
 
-// — Login —
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
-    console.log('🔔 Hit Login endpoint');
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ msg: 'Invalid credentials' });
-        if (!user.approved) return res.status(403).json({ msg: 'User not approved yet.' });
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-
-        const payload = {
-            id: user._id,
-            role: user.role,
-            firstLogin: user.firstLogin
-        };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token });
+        if (!await user.comparePassword(password))
+            return res.status(400).json({ msg: 'Invalid credentials' });
+        if (!user.approved)
+            return res.status(403).json({ msg: 'Awaiting admin approval' });
+        const token = signToken(user);
+        res.json({ token, role: user.role, firstLogin: user.firstLogin });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 });
 
-// — Change Password (First Login) —
-router.post('/change-password', async (req, res) => {
-    console.log('🔔 Hit Change-Password endpoint');
+// POST /api/auth/change-password
+router.post('/change-password', verifyToken, async (req, res) => {
     try {
-        const header = req.headers.authorization;
-        if (!header) return res.status(401).json({ msg: 'No token provided' });
-
-        const token = header.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id);
-        if (!user) return res.status(404).json({ msg: 'User not found' });
-
-        const { newPassword } = req.body;
-        const hashed = await bcrypt.hash(newPassword, 10);
-        user.password = hashed;
+        const { oldPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!await user.comparePassword(oldPassword))
+            return res.status(400).json({ msg: 'Old password incorrect' });
+        user.password = newPassword;
         user.firstLogin = false;
         await user.save();
-
-        res.json({ msg: 'Password changed successfully.' });
+        res.json({ msg: 'Password changed' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 });
 

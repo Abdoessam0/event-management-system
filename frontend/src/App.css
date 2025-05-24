@@ -1,0 +1,173 @@
+/* Reset & Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Header */
+header {
+  background: #2c3e50;
+  padding: 1rem 2rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header .logo {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+header nav a,
+header nav button {
+  margin-left: 1rem;
+  color: #ecf0f1;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+header nav a:hover,
+header nav button:hover {
+  text-decoration: underline;
+}
+
+/* Container & Card */
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+/* Headings */
+h2 {
+  margin-bottom: 1rem;
+}
+
+/* Lists */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+a.event-link {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a.event-link:hover {
+  text-decoration: underline;
+}
+
+/* Ticket Controls */
+.ticket-controls {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.ticket-controls label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+
+.ticket-controls input,
+.ticket-controls select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccd;
+  border-radius: 4px;
+}
+
+/* Forms */
+form div {
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccd;
+  border-radius: 4px;
+}
+
+form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #219150;
+}
+
+/* Utility */
+.text-center {
+  text-align: center;
+}
+
+/* Primary Button */
+.btn-primary {
+  display: inline-block;
+  width: 100%;
+  /* full width */
+  padding: 0.75rem;
+  /* comfortable tap area */
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  background-color: #1d72b8;
+  /* nice blue */
+  border: 2px solid #1d72b8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+}
+
+.btn-primary:hover {
+  background-color: #155d8a;
+  border-color: #155d8a;
+}

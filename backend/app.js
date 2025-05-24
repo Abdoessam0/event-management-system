@@ -49,6 +49,14 @@ app.use('/api/tickets', ticketsRouter);
 app.use('/api/announcements', announcementsRouter);
 
 
+// serve React build for any non-API route
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
+
+
 // ———— 404 handler ————
 app.use((req, res, next) => {
     next(createError(404));

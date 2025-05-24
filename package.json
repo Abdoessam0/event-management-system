@@ -1,0 +1,11 @@
+{
+  "name": "event-management-system",
+  "version": "1.0.0",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "node backend/bin/www",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
+  }
+}

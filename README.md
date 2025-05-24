@@ -218,15 +218,6 @@ npm start                   # runs on http://localhost:3000
 * `PUT    /api/announcements/:id`   — update announcement (admin)
 * `DELETE /api/announcements/:id`   — delete announcement (admin)
 
-## Deployment
-
-We use Render.com for a free hobby tier:
-
-1. **Backend**: Create a **Web Service**, connect GitHub repo, set build command `npm install && npm run seedEvents && npm run seedAnnouncements`, start command `npm start`, env vars from `.env`.
-2. **Frontend**: Create a **Static Site**, connect the same repo, set the build command `npm install && npm run build`, publish the directory `frontend/build`.
-3. **MongoDB**: Use Atlas free tier, whitelist Render IPs, set `MONGO_URI` accordingly.
-
-Once deployed, users can visit your public URL to try the live demo.
 
 ## Contributing
 
